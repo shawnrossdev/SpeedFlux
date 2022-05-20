@@ -57,14 +57,13 @@ jobs:
         run: docker build . --file Dockerfile --tag $IMAGE_NAME
 
       - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login ghcr.io -u ${{ secrets.DOCKER_HUB_USER }} --password-stdin
 
       - name: Push image
         run: |
-          IMAGE_ID=ghcr.io/$GITHUB_ACTOR/$IMAGE_NAME
 
           # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          IMAGE_ID=${{ secrets.DOCKER_HUB_USER }}/$IMAGE_NAME
 
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
